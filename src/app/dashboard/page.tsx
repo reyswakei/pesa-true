@@ -96,7 +96,6 @@ export default function Dashboard() {
         {filtered.length===0 && <p className="p-10 text-center text-gray-400">Hakuna madeni</p>}
       </div>
 
-      {/* ADD MODAL */}
       {showAdd && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white p-6 rounded-2xl w-full max-w-md">
@@ -106,13 +105,12 @@ export default function Dashboard() {
             <input value={amount} onChange={e=>setAmount(e.target.value)} type="number" placeholder="Kiasi - 1000" className="w-full p-3 border rounded-xl mb-4" />
             <div className="flex gap-2">
               <button onClick={()=>setShowAdd(false)} className="flex-1 p-3 border rounded-xl">Cancel</button>
-              <button onClick={handleAdd} disabled={saving} className="flex-1 p-3 bg-black text-white rounded-xl disabled:opacity-50">{saving?'Inahifadhi...':'Save Deni'}</button>
+              <button onClick={handleAdd} disabled={saving} className="flex-1 p-3 bg-black text-white rounded-xl disabled:opacity-50 font-bold">{saving?'Inahifadhi...':'Save Deni'}</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ACTION MODAL WHEN YOU CLICK DEBTOR */}
       {selected && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white p-6 rounded-2xl w-full max-w-sm">
@@ -121,7 +119,11 @@ export default function Dashboard() {
             <p className="font-black text-lg mb-6">KES {Number(selected.amount).toLocaleString()} - {selected.status}</p>
             <div className="grid gap-2">
               <a href={`tel:${selected.phone}`} className="p-3 bg-blue-600 text-white rounded-xl text-center font-bold">Piga Simu</a>
-              <a href={`https://wa.me/${selected.phone?.replace(/^0/,'254')}`} target="_blank" className="p-3 bg-green-600 text-white rounded-xl text-center font-bold">WhatsApp</a>
+              {(() => {
+                const msg = encodeURIComponent(`Habari ${selected.customer_name}, deni lako ni KES ${selected.amount}. Tafadhali lipa haraka. - Pesa True`);
+                const num = selected.phone?.replace(/^0/,'254').replace(/[^0-9]/g,'');
+                return <a href={`https://wa.me/${num}?text=${msg}`} target="_blank" className="p-3 bg-green-600 text-white rounded-xl text-center font-bold">WhatsApp: Kumbusha</a>
+              })()}
               {selected.status!=='paid' && <button onClick={()=>markPaid(selected.id)} className="p-3 bg-black text-white rounded-xl font-bold">Mark Lipa</button>}
               <button onClick={()=>deleteDeni(selected.id)} className="p-3 bg-red-100 text-red-600 rounded-xl font-bold">Futa Deni</button>
               <button onClick={()=>setSelected(null)} className="p-3 border rounded-xl">Funga</button>
